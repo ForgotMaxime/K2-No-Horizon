@@ -26,6 +26,12 @@ OPERATORS = [
         "bad": "    return taxed * (1 + tax_rate)\n",
     },
     {
+        "id": "discount-apply",
+        "target": "src/discount.py",
+        "good": "    return price * (1 - pct)\n",
+        "bad": "    return price * pct\n",
+    },
+    {
         "id": "auth-eq",
         "target": "src/auth.py",
         "good": "    if user_name == allowed_name:\n",

@@ -1,0 +1,174 @@
+{
+  "suite": "codegen-24",
+  "max_retries": 1,
+  "tasks": [
+    {
+      "id": "cg-factorial",
+      "prompt": "Write `fact(n)` returning n! for n >= 0 (fact(0) is 1). Example: fact(5) is 120.",
+      "starter": "def fact(n):\n    pass\n",
+      "function": "fact",
+      "tests": ["assert fact(0) == 1", "assert fact(5) == 120", "assert fact(7) == 5040"]
+    },
+    {
+      "id": "cg-fib",
+      "prompt": "Write `fib(n)` returning the n-th Fibonacci number (fib(0)=0, fib(1)=1). Example: fib(10) is 55.",
+      "starter": "def fib(n):\n    pass\n",
+      "function": "fib",
+      "tests": ["assert fib(0) == 0", "assert fib(1) == 1", "assert fib(10) == 55"]
+    },
+    {
+      "id": "cg-palindrome",
+      "prompt": "Write `is_palindrome(s)` returning True if s reads the same forwards and backwards, case-insensitive. Example: is_palindrome(\"Madam\") is True.",
+      "starter": "def is_palindrome(s):\n    pass\n",
+      "function": "is_palindrome",
+      "tests": ["assert is_palindrome(\"Madam\") is True", "assert is_palindrome(\"hello\") is False", "assert is_palindrome(\"\") is True"]
+    },
+    {
+      "id": "cg-fizzbuzz",
+      "prompt": "Write `fizzbuzz(n)` returning the list of strings from 1 to n with multiples of 3 as \"Fizz\", of 5 as \"Buzz\", of both as \"FizzBuzz\". Example: fizzbuzz(5)[-1] is \"Buzz\".",
+      "starter": "def fizzbuzz(n):\n    pass\n",
+      "function": "fizzbuzz",
+      "tests": ["assert fizzbuzz(3) == [\"1\", \"2\", \"Fizz\"]", "assert fizzbuzz(5)[-1] == \"Buzz\"", "assert fizzbuzz(15)[14] == \"FizzBuzz\""]
+    },
+    {
+      "id": "cg-binary-search",
+      "prompt": "Write `binary_search(xs, x)` returning the index of x in sorted xs, or -1 if absent. Example: binary_search([1, 2, 3, 4, 5], 3) is 2.",
+      "starter": "def binary_search(xs, x):\n    pass\n",
+      "function": "binary_search",
+      "tests": ["assert binary_search([1, 2, 3, 4, 5], 3) == 2", "assert binary_search([1, 2, 3], 4) == -1", "assert binary_search([], 1) == -1"]
+    },
+    {
+      "id": "cg-gcd",
+      "prompt": "Write `gcd(a, b)` returning the greatest common divisor. Example: gcd(48, 18) is 6.",
+      "starter": "def gcd(a, b):\n    pass\n",
+      "function": "gcd",
+      "tests": ["assert gcd(48, 18) == 6", "assert gcd(7, 5) == 1", "assert gcd(100, 25) == 25"]
+    },
+    {
+      "id": "cg-lcm",
+      "prompt": "Write `lcm(a, b)` returning the least common multiple. Example: lcm(4, 6) is 12.",
+      "starter": "def lcm(a, b):\n    pass\n",
+      "function": "lcm",
+      "tests": ["assert lcm(4, 6) == 12", "assert lcm(7, 5) == 35"]
+    },
+    {
+      "id": "cg-prime",
+      "prompt": "Write `is_prime(n)` returning True for prime n (n < 2 is not prime). Example: is_prime(17) is True.",
+      "starter": "def is_prime(n):\n    pass\n",
+      "function": "is_prime",
+      "tests": ["assert is_prime(2) is True", "assert is_prime(1) is False", "assert is_prime(17) is True", "assert is_prime(15) is False"]
+    },
+    {
+      "id": "cg-reverse-words",
+      "prompt": "Write `reverse_words(s)` reversing the order of whitespace-separated words. Example: reverse_words(\"hello world\") is \"world hello\".",
+      "starter": "def reverse_words(s):\n    pass\n",
+      "function": "reverse_words",
+      "tests": ["assert reverse_words(\"hello world\") == \"world hello\"", "assert reverse_words(\"a\") == \"a\""]
+    },
+    {
+      "id": "cg-flatten",
+      "prompt": "Write `flatten(xss)` flattening one level of nesting. Example: flatten([[1, 2], [3]]) is [1, 2, 3].",
+      "starter": "def flatten(xss):\n    pass\n",
+      "function": "flatten",
+      "tests": ["assert flatten([[1, 2], [3]]) == [1, 2, 3]", "assert flatten([[], [1]]) == [1]"]
+    },
+    {
+      "id": "cg-dedupe",
+      "prompt": "Write `dedupe(xs)` removing duplicates, preserving order. Example: dedupe([1, 2, 2, 3]) is [1, 2, 3].",
+      "starter": "def dedupe(xs):\n    pass\n",
+      "function": "dedupe",
+      "tests": ["assert dedupe([1, 2, 2, 3, 1]) == [1, 2, 3]", "assert dedupe([]) == []"]
+    },
+    {
+      "id": "cg-anagram",
+      "prompt": "Write `is_anagram(a, b)` returning True if a and b hold the same letters. Example: is_anagram(\"listen\", \"silent\") is True.",
+      "starter": "def is_anagram(a, b):\n    pass\n",
+      "function": "is_anagram",
+      "tests": ["assert is_anagram(\"listen\", \"silent\") is True", "assert is_anagram(\"hello\", \"world\") is False"]
+    },
+    {
+      "id": "cg-merge-sorted",
+      "prompt": "Write `merge_sorted(a, b)` merging two sorted lists into one sorted list. Example: merge_sorted([1, 3], [2]) is [1, 2, 3].",
+      "starter": "def merge_sorted(a, b):\n    pass\n",
+      "function": "merge_sorted",
+      "tests": ["assert merge_sorted([1, 3, 5], [2, 4, 6]) == [1, 2, 3, 4, 5, 6]", "assert merge_sorted([], [1]) == [1]"]
+    },
+    {
+      "id": "cg-second-largest",
+      "prompt": "Write `second_largest(xs)` returning the second largest distinct value. Example: second_largest([1, 5, 3, 4]) is 4.",
+      "starter": "def second_largest(xs):\n    pass\n",
+      "function": "second_largest",
+      "tests": ["assert second_largest([1, 5, 3, 4]) == 4", "assert second_largest([10, 10, 5]) == 5"]
+    },
+    {
+      "id": "cg-vowels",
+      "prompt": "Write `count_vowels(s)` counting aeiouAEIOU in s. Example: count_vowels(\"hello\") is 2.",
+      "starter": "def count_vowels(s):\n    pass\n",
+      "function": "count_vowels",
+      "tests": ["assert count_vowels(\"hello\") == 2", "assert count_vowels(\"xyz\") == 0", "assert count_vowels(\"AEIOU\") == 5"]
+    },
+    {
+      "id": "cg-two-sum",
+      "prompt": "Write `two_sum(xs, target)` returning two indices whose values sum to target. Example: sorted(two_sum([2, 7, 11, 15], 9)) is [0, 1].",
+      "starter": "def two_sum(xs, target):\n    pass\n",
+      "function": "two_sum",
+      "tests": ["assert sorted(two_sum([2, 7, 11, 15], 9)) == [0, 1]", "assert sorted(two_sum([3, 3], 6)) == [0, 1]"]
+    },
+    {
+      "id": "cg-valid-parens",
+      "prompt": "Write `valid_parens(s)` checking ()[]{} nesting. Example: valid_parens(\"()[]{}\") is True, valid_parens(\"(]\") is False.",
+      "starter": "def valid_parens(s):\n    pass\n",
+      "function": "valid_parens",
+      "tests": ["assert valid_parens(\"()[]{}\") is True", "assert valid_parens(\"(]\") is False", "assert valid_parens(\"([)]\") is False", "assert valid_parens(\"\") is True"]
+    },
+    {
+      "id": "cg-rotate",
+      "prompt": "Write `rotate(xs, k)` rotating right by k. Example: rotate([1, 2, 3, 4, 5], 2) is [4, 5, 1, 2, 3].",
+      "starter": "def rotate(xs, k):\n    pass\n",
+      "function": "rotate",
+      "tests": ["assert rotate([1, 2, 3, 4, 5], 2) == [4, 5, 1, 2, 3]", "assert rotate([1, 2], 0) == [1, 2]"]
+    },
+    {
+      "id": "cg-chunk",
+      "prompt": "Write `chunk(xs, n)` splitting xs into blocks of n. Example: chunk([1, 2, 3, 4, 5], 2) is [[1, 2], [3, 4], [5]].",
+      "starter": "def chunk(xs, n):\n    pass\n",
+      "function": "chunk",
+      "tests": ["assert chunk([1, 2, 3, 4, 5], 2) == [[1, 2], [3, 4], [5]]", "assert chunk([], 3) == []"]
+    },
+    {
+      "id": "cg-running-sum",
+      "prompt": "Write `running_sum(xs)` returning cumulative sums. Example: running_sum([1, 2, 3]) is [1, 3, 6].",
+      "starter": "def running_sum(xs):\n    pass\n",
+      "function": "running_sum",
+      "tests": ["assert running_sum([1, 2, 3]) == [1, 3, 6]", "assert running_sum([]) == []"]
+    },
+    {
+      "id": "cg-missing",
+      "prompt": "Write `find_missing(xs, n)` finding the missing number in 1..n. Example: find_missing([1, 2, 4, 5], 5) is 3.",
+      "starter": "def find_missing(xs, n):\n    pass\n",
+      "function": "find_missing",
+      "tests": ["assert find_missing([1, 2, 4, 5], 5) == 3", "assert find_missing([2, 3, 4], 4) == 1"]
+    },
+    {
+      "id": "cg-power",
+      "prompt": "Write `power(b, e)` returning b**e for e >= 0. Example: power(2, 10) is 1024.",
+      "starter": "def power(b, e):\n    pass\n",
+      "function": "power",
+      "tests": ["assert power(2, 10) == 1024", "assert power(5, 0) == 1"]
+    },
+    {
+      "id": "cg-digital-root",
+      "prompt": "Write `digital_root(n)` summing digits until one remains. Example: digital_root(38) is 2.",
+      "starter": "def digital_root(n):\n    pass\n",
+      "function": "digital_root",
+      "tests": ["assert digital_root(38) == 2", "assert digital_root(0) == 0", "assert digital_root(9) == 9"]
+    },
+    {
+      "id": "cg-collatz",
+      "prompt": "Write `collatz_steps(n)` counting steps to reach 1 (n/2 if even, 3n+1 if odd). Example: collatz_steps(6) is 8.",
+      "starter": "def collatz_steps(n):\n    pass\n",
+      "function": "collatz_steps",
+      "tests": ["assert collatz_steps(6) == 8", "assert collatz_steps(1) == 0"]
+    }
+  ]
+}

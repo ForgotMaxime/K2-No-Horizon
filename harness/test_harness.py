@@ -4,6 +4,7 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
+from harness import grade
 from harness.grade import (
     apply_single_file_diff,
     grade_debug,
@@ -122,6 +123,7 @@ class MutatorTests(unittest.TestCase):
         clean = {
             "pricing-tax": ("def add_tax(price, rate):\n    return price * (1 + rate)\n", "add_tax", [(100, 0.2)], [120]),
             "tags-strip": ("def parse_tags(text):\n    return [tag.strip() for tag in text.split(',') if tag.strip()]\n", "parse_tags", [("red, ,blue",)], [["red", "blue"]]),
+            "discount-apply": ("def apply_discount(price, pct):\n    return price * (1 - pct)\n", "apply_discount", [(100, 0.2)], [80]),
         }
         for op_id, (clean_src, func, args, expected) in clean.items():
             buggy = apply_operator(clean_src, op_id)
@@ -130,11 +132,38 @@ class MutatorTests(unittest.TestCase):
             self.assertTrue(safe_function_tests(remove_operator(buggy, op_id), func, args, expected))
 
     def test_operator_ids_cover_patch_targets(self):
-        self.assertEqual(operator_ids(), ["pricing-tax", "tags-strip", "tax-double", "auth-eq"])
+        self.assertEqual(operator_ids(), ["pricing-tax", "tags-strip", "tax-double", "discount-apply", "auth-eq"])
 
     def test_apply_rejects_missing_snippet(self):
         with self.assertRaises(ValueError):
             apply_operator("nothing here\n", "pricing-tax")
+
+
+class CodegenTests(unittest.TestCase):
+    def test_extract_code_prefers_python_fence(self):
+        answer = "Here:\n```python\ndef f(x):\n    return x\n```\nDone."
+        self.assertIn("def f(x):", grade.extract_code(answer))
+
+    def test_extract_code_falls_back_to_raw_def(self):
+        self.assertIn("def f", grade.extract_code("def f(x):\n    return x\n"))
+
+    def test_extract_code_rejects_prose(self):
+        self.assertEqual(grade.extract_code("no code here"), "")
+
+    def test_run_codegen_tests_good_and_bad(self):
+        good = "def fact(n):\n    return 1 if n <= 1 else n * fact(n - 1)\n"
+        self.assertTrue(grade.run_codegen_tests(good, ["assert fact(5) == 120"]))
+        bad = "def fact(n):\n    return n\n"
+        self.assertFalse(grade.run_codegen_tests(bad, ["assert fact(5) == 120"]))
+
+    def test_run_codegen_tests_rejects_syntax_error_and_timeout(self):
+        self.assertFalse(grade.run_codegen_tests("def broken(:\n", ["assert True"]))
+        self.assertFalse(grade.run_codegen_tests("while True:\n    pass\n", ["assert True"], timeout=1))
+
+    def test_codegen_suite_loads_24(self):
+        tasks = grade.load_codegen()
+        self.assertEqual(len(tasks), 24)
+        self.assertTrue(all(t["function"] and t["tests"] for t in tasks))
 
 
 if __name__ == "__main__":

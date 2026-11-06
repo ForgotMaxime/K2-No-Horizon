@@ -8,6 +8,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Guider le format des réponses (exemple d’en-têtes de diff, rappel `path:function`) sans donner les réponses ; grouper les changements de harnais avant `reset` + re-mesure.
 - Étendre la suite : patches sur `tax.py`/`cache.py`/`auth.py`, navigation multi-sauts.
 
+## [0.4.0] - 2026-11-06
+
+### Ajouté
+
+- 4 tâches agentic (12 au total) : nav-3 (`discount:apply_discount`), nav-4 (`order_reader:get_order`), debug-3 (`pagination`, offset `(page - 1) * size`), patch-5 (`discount`, opérateur `discount-apply`), avec `src/discount.py`, `src/pagination.py`, `tests/test_discount.py`.
+- `benchmark/codegen.json` : 24 tâches de complétion de fonctions style LiveCodeBench, tests cachés exécutés en processus isolé (`run_codegen_tests`, timeout 15 s).
+- `SUITE_FILES` couvre les nouveaux fichiers.
+
 ## [0.3.0] - 2026-11-06
 
 ### Ajouté

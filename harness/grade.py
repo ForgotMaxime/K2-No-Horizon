@@ -5,20 +5,28 @@ import ast
 import hashlib
 import json
 import re
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 TASKS_FILE = ROOT / "benchmark" / "tasks.json"
+CODEGEN_FILE = ROOT / "benchmark" / "codegen.json"
+CODEGEN_TIMEOUT_S = 15
 
 # Files covered by the suite identity hash: tasks + sources + tests.
 SUITE_FILES = [
     "benchmark/tasks.json",
+    "benchmark/codegen.json",
     "pricing.py",
     "tags.py",
     "src/cart.py",
     "src/pricing/tax.py",
     "src/cache.py",
+    "src/discount.py",
+    "src/pagination.py",
     "src/auth.py",
     "tests/test_auth.py",
     "app/routes/orders.py",
@@ -28,6 +36,7 @@ SUITE_FILES = [
     "tests/test_pricing.py",
     "tests/test_tags.py",
     "tests/test_tax.py",
+    "tests/test_discount.py",
 ]
 
 SAFE_AST_NODES = {
@@ -44,6 +53,41 @@ SAFE_METHODS = {"strip", "split", "casefold", "lower", "upper", "replace", "star
 
 def load_tasks():
     return json.loads(TASKS_FILE.read_text(encoding="utf-8"))["tasks"]
+
+
+def load_codegen():
+    return json.loads(CODEGEN_FILE.read_text(encoding="utf-8"))["tasks"]
+
+
+def extract_code(answer: str) -> str:
+    """Extract a python solution: prefer ```python fences, else raw def block."""
+    blocks = re.findall(r"```python\s*\n(.*?)```", answer, flags=re.IGNORECASE | re.DOTALL)
+    if blocks:
+        return max(blocks, key=len)
+    blocks = re.findall(r"```\s*\n(.*?)```", answer, flags=re.DOTALL)
+    for block in blocks:
+        if "def " in block:
+            return block
+    if "def " in answer:
+        return answer
+    return ""
+
+
+def run_codegen_tests(solution: str, test_asserts: list[str], timeout: int = CODEGEN_TIMEOUT_S) -> bool:
+    """Execute solution + hidden asserts in an isolated temp process. No network."""
+    check = solution + "\n\n" + "\n".join(test_asserts) + "\n"
+    try:
+        tree = ast.parse(check)
+    except SyntaxError:
+        return False
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "check.py"
+        target.write_text(check, encoding="utf-8")
+        try:
+            completed = subprocess.run([sys.executable, str(target)], capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return False
+        return completed.returncode == 0
 
 
 def suite_identity(root: Path = ROOT) -> str:
