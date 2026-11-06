@@ -5,7 +5,8 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 ## [Unreleased]
 
-- Brancher `run_local` v2 (boucle d'outils multi-tours `list/read/apply_patch`) sur cette suite, puis ouvrir une nouvelle comparaison moteur (`reset`) et re-mesurer baseline/candidats.
+- Guider le format des réponses (exemple d’en-têtes de diff, rappel `path:function`) sans donner les réponses ; grouper les changements de harnais avant `reset` + re-mesure.
+- Étendre la suite : patches sur `tax.py`/`cache.py`/`auth.py`, navigation multi-sauts.
 
 ## [0.1.0] - 2026-11-06
 
@@ -23,3 +24,4 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 - `python -m unittest harness.test_harness -v` : 10/10 OK.
 - `python -m pytest -q` : 3 échecs attendus (`pricing`, `tags`, `tax`), 1 succès (`order_store`).
+- Branché au moteur ENDP (`run_local` v2, boucle 2-tours) le 2026-11-06 : baseline modèle **2/6** (outils utilisés, échecs de format et une navigation).
