@@ -1,0 +1,60 @@
+{
+  "suite": "k2-no-horizon-v1",
+  "max_steps": 6,
+  "tasks": [
+    {
+      "id": "nav-1",
+      "category": "navigation",
+      "prompt": "Bug report: tax is applied twice at checkout. Find which file:function owns the duplicated tax operation. Use list_files and read_file, then reply exactly as `path:function`.",
+      "answer_path": "src/pricing/tax.py",
+      "answer_function": "calculate_total",
+      "required_tools": ["list_files", "read_file"]
+    },
+    {
+      "id": "nav-2",
+      "category": "navigation",
+      "prompt": "Bug report: the SQL query returns a stale order status. Find which file:function owns the database read. Use list_files and read_file, then reply exactly as `path:function`.",
+      "answer_path": "app/storage/order_store.py",
+      "answer_function": "fetch",
+      "required_tools": ["list_files", "read_file"]
+    },
+    {
+      "id": "debug-1",
+      "category": "problem_solving",
+      "prompt": "Read src/cache.py. The cached factory reruns when a cached result is None. Reply with the single correct Python condition line using a membership test on the key.",
+      "needles": ["if key not in cache"],
+      "target_file": "src/cache.py",
+      "required_tools": ["read_file"]
+    },
+    {
+      "id": "debug-2",
+      "category": "problem_solving",
+      "prompt": "Read src/auth.py. The check `if user.name is allowed_name:` rejects equal strings. Reply in one sentence with the cause and the correct comparison.",
+      "needles": ["is", "=="],
+      "target_file": "src/auth.py",
+      "required_tools": ["read_file"]
+    },
+    {
+      "id": "patch-1",
+      "category": "patch_generation",
+      "prompt": "Fix pricing.py so add_tax(price, rate) returns price including tax (100 at 0.2 returns 120). Read the file first, then return one unified diff with headers `diff --git a/pricing.py b/pricing.py`, `--- a/pricing.py`, `+++ b/pricing.py` and no explanation.",
+      "target_file": "pricing.py",
+      "function": "add_tax",
+      "test_args": [[100, 0.2]],
+      "test_expected": [120],
+      "pytest": "tests/test_pricing.py",
+      "required_tools": ["read_file"]
+    },
+    {
+      "id": "patch-2",
+      "category": "patch_generation",
+      "prompt": "Fix tags.py so parse_tags drops whitespace-only entries after trimming (\"red, ,blue\" -> [\"red\", \"blue\"]). Read the file first, then return one unified diff with headers `diff --git a/tags.py b/tags.py`, `--- a/tags.py`, `+++ b/tags.py` and no explanation.",
+      "target_file": "tags.py",
+      "function": "parse_tags",
+      "test_args": [["red, ,blue"]],
+      "test_expected": [["red", "blue"]],
+      "pytest": "tests/test_tags.py",
+      "required_tools": ["read_file"]
+    }
+  ]
+}
