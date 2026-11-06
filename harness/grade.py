@@ -14,12 +14,18 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 TASKS_FILE = ROOT / "benchmark" / "tasks.json"
 CODEGEN_FILE = ROOT / "benchmark" / "codegen.json"
+LEETCODE_FILE = ROOT / "benchmark" / "leetcode.json"
+LCB_FILE = ROOT / "benchmark" / "livecodebench.json"
 CODEGEN_TIMEOUT_S = 15
+IO_TIMEOUT_S = 5
 
 # Files covered by the suite identity hash: tasks + sources + tests.
 SUITE_FILES = [
     "benchmark/tasks.json",
     "benchmark/codegen.json",
+    "benchmark/leetcode.json",
+    "benchmark/livecodebench.json",
+    "benchmark/build_livecodebench.py",
     "pricing.py",
     "tags.py",
     "src/cart.py",
@@ -56,7 +62,15 @@ def load_tasks():
 
 
 def load_codegen():
-    return json.loads(CODEGEN_FILE.read_text(encoding="utf-8"))["tasks"]
+    tasks = []
+    for path in (CODEGEN_FILE, LEETCODE_FILE):
+        if path.exists():
+            tasks.extend(json.loads(path.read_text(encoding="utf-8"))["tasks"])
+    return tasks
+
+
+def load_lcb():
+    return json.loads(LCB_FILE.read_text(encoding="utf-8"))["tasks"]
 
 
 def extract_code(answer: str) -> str:
@@ -73,9 +87,51 @@ def extract_code(answer: str) -> str:
     return ""
 
 
+def extract_program(answer: str) -> str:
+    """Extract a full stdin/stdout program: fences first, else raw code-looking text."""
+    blocks = re.findall(r"```python\s*\n(.*?)```", answer, flags=re.IGNORECASE | re.DOTALL)
+    if blocks:
+        return max(blocks, key=len)
+    blocks = re.findall(r"```\s*\n(.*?)```", answer, flags=re.DOTALL)
+    for block in blocks:
+        if "input(" in block or "def " in block or "print(" in block or "sys.stdin" in block:
+            return block
+    if "input(" in answer or "sys.stdin" in answer or ("def " in answer and "print(" in answer):
+        return answer
+    return ""
+
+
+def run_io_tests(program: str, cases: list, timeout: int = IO_TIMEOUT_S) -> bool:
+    """Execute a full program per case with stdin; compare stripped stdout."""
+    try:
+        compile(program, "<solution>", "exec")
+    except SyntaxError:
+        return False
+    with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / "solution.py"
+        target.write_text(program, encoding="utf-8")
+        for case in cases:
+            try:
+                completed = subprocess.run(
+                    [sys.executable, str(target)],
+                    input=case["input"],
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                )
+            except subprocess.TimeoutExpired:
+                return False
+            if completed.returncode != 0:
+                return False
+            if completed.stdout.strip() != case["output"].strip():
+                return False
+    return True
+
+
 def run_codegen_tests(solution: str, test_asserts: list[str], timeout: int = CODEGEN_TIMEOUT_S) -> bool:
     """Execute solution + hidden asserts in an isolated temp process. No network."""
-    check = solution + "\n\n" + "\n".join(test_asserts) + "\n"
+    preamble = "from typing import List, Dict, Optional\n"
+    check = preamble + solution + "\n\n" + "\n".join(test_asserts) + "\n"
     try:
         tree = ast.parse(check)
     except SyntaxError:

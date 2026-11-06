@@ -20,7 +20,10 @@ app/storage/order_store.py  # nav-2 : contient le SQL, définit fetch
 app/models/order.py         # modèle Order
 tests/                      # pytest : 5 tests rouges avant patch
 benchmark/tasks.json        # 12 tâches agentic (3 nav, 3 debug, 6 patch)
-benchmark/codegen.json      # 24 tâches codegen style LiveCodeBench, tests cachés
+benchmark/codegen.json      # 24 tâches codegen curées, tests cachés
+benchmark/leetcode.json     # 89 tâches LeetCode faciles (fonctionnelles)
+benchmark/livecodebench.json# 187 tâches AtCoder/Codeforces faciles (stdin/stdout)
+benchmark/build_livecodebench.py # régénère les deux fichiers depuis le Hub
 harness/                    # boucle d'outils (list/read/sigs/grep/apply_patch) + grading strict + mutateur + codegen + tests CPU
 ```
 

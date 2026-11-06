@@ -161,9 +161,42 @@ class CodegenTests(unittest.TestCase):
         self.assertFalse(grade.run_codegen_tests("while True:\n    pass\n", ["assert True"], timeout=1))
 
     def test_codegen_suite_loads_24(self):
-        tasks = grade.load_codegen()
+        tasks = [t for t in grade.load_codegen() if not t["id"].startswith("lcb-")]
         self.assertEqual(len(tasks), 24)
         self.assertTrue(all(t["function"] and t["tests"] for t in tasks))
+
+    def test_leetcode_suite_loads_89(self):
+        tasks = [t for t in grade.load_codegen() if t["id"].startswith("lcb-")]
+        self.assertEqual(len(tasks), 89)
+        by_id = {t["id"]: t for t in tasks}
+        sample = list(by_id)[:3]
+        for tid in sample:
+            self.assertFalse(grade.run_codegen_tests(by_id[tid]["starter"], by_id[tid]["tests"]))
+        seniors = by_id["lcb-leetcode-2727"]
+        good = "class Solution:\n    def countSeniors(self, details):\n        return sum(int(d[11:13]) > 60 for d in details)\n"
+        self.assertTrue(grade.run_codegen_tests(good, seniors["tests"]))
+
+    def test_lcb_suite_loads_187(self):
+        tasks = grade.load_lcb()
+        self.assertEqual(len(tasks), 187)
+        self.assertTrue(all(t["tests"] and t["platform"] in ("atcoder", "codeforces") for t in tasks))
+
+    def test_run_io_tests_good_bad_timeout(self):
+        prog = (
+            "import sys\n"
+            "data = sys.stdin.read().split()\n"
+            "t = int(data[0])\n"
+            "out = []\n"
+            "for s in data[1:1+t]:\n"
+            '    ok = sorted(s) == sorted("abc") and (s == "abc" or sum(a != b for a, b in zip(s, "abc")) == 2)\n'
+            '    out.append("YES" if ok else "NO")\n'
+            'print(chr(10).join(out))\n'
+        )
+        task = next(t for t in grade.load_lcb() if t["id"] == "lcb-codeforces-1873_A")
+        self.assertTrue(grade.run_io_tests(prog, task["tests"]))
+        self.assertFalse(grade.run_io_tests('print("NO")', task["tests"]))
+        self.assertFalse(grade.run_io_tests("while True:\n    pass\n", task["tests"][:1], timeout=2))
+        self.assertFalse(grade.run_io_tests("def broken(:\n", task["tests"][:1]))
 
 
 if __name__ == "__main__":

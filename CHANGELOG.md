@@ -8,6 +8,15 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Guider le format des réponses (exemple d’en-têtes de diff, rappel `path:function`) sans donner les réponses ; grouper les changements de harnais avant `reset` + re-mesure.
 - Étendre la suite : patches sur `tax.py`/`cache.py`/`auth.py`, navigation multi-sauts.
 
+## [0.5.0] - 2026-11-07
+
+### Ajouté
+
+- `benchmark/livecodebench.json` : 187 tâches faciles AtCoder/Codeforces (stdin/stdout, tests publics + privés, max 4 cas), générées par `benchmark/build_livecodebench.py` depuis le Hub (filtre `difficulty == easy`).
+- `benchmark/leetcode.json` : 89 tâches LeetCode faciles (complétion de classe `Solution`, asserts générés, appel mono-argument).
+- `harness/grade.py` : `load_lcb`, `extract_program`, `run_io_tests` (processus isolé, timeout 5 s, comparaison stripped) ; `load_codegen` couvre codegen + leetcode.
+- Total suite : 12 agentic + 24 codegen + 89 leetcode + 187 io = 312 tâches.
+
 ## [0.4.0] - 2026-11-06
 
 ### Ajouté
