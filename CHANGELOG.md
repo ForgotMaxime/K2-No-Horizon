@@ -8,6 +8,13 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Guider le format des réponses (exemple d’en-têtes de diff, rappel `path:function`) sans donner les réponses ; grouper les changements de harnais avant `reset` + re-mesure.
 - Étendre la suite : patches sur `tax.py`/`cache.py`/`auth.py`, navigation multi-sauts.
 
+## [0.3.0] - 2026-11-06
+
+### Ajouté
+
+- Outils `SIGS:` (signatures AST par fichier, sans lecture complète) et `GREP:` (recherche de mot-clé `fichier:ligne:texte`, max 30) avec trace ; guide d'outils « start cheap ».
+- `harness/mutate.py` : 4 opérateurs d'injection de bugs (`pricing-tax`, `tags-strip`, `tax-double`, `auth-eq`) avec aller-retour rouge-avant/vert-après testé.
+
 ## [0.2.0] - 2026-11-06
 
 ### Ajouté

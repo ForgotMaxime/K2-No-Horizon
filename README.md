@@ -18,7 +18,7 @@ app/storage/order_store.py  # nav-2 : contient le SQL, définit fetch
 app/models/order.py         # modèle Order
 tests/                      # pytest : 4 tests rouges avant patch (pricing, tags, tax, auth)
 benchmark/tasks.json        # 8 tâches : 2 nav, 2 debug, 4 patch
-harness/                    # boucle d'outils + grading strict + tests CPU
+harness/                    # boucle d'outils (list/read/sigs/grep/apply_patch) + grading strict + mutateur + tests CPU
 ```
 
 ## Règle de reprise (même discipline que le moteur WSP)

@@ -12,6 +12,7 @@ from harness.grade import (
     safe_function_tests,
     suite_identity,
 )
+from harness.mutate import apply_operator, operator_ids, remove_operator
 from harness.tools import RepoSandbox
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +90,51 @@ class GradingTests(unittest.TestCase):
     def test_suite_identity_stable(self):
         self.assertEqual(suite_identity(ROOT), suite_identity(ROOT))
         self.assertEqual(len(suite_identity(ROOT)), 64)
+
+
+class ToolSearchTests(unittest.TestCase):
+    def test_sigs_lists_signatures_without_full_read(self):
+        box = RepoSandbox(ROOT)
+        sigs = box.sigs("pricing.py")
+        self.assertTrue(any("def add_tax(price, rate)" in s for s in sigs))
+        self.assertIn("sigs:pricing.py", box.trace)
+        self.assertFalse(any(t.startswith("read_file:") for t in box.trace))
+
+    def test_sigs_rejects_traversal(self):
+        out = RepoSandbox(ROOT).sigs("../handoff.md")
+        self.assertEqual(len(out), 1)
+        self.assertTrue(out[0].startswith("<parse-error:"))
+
+    def test_grep_finds_keyword_across_files(self):
+        box = RepoSandbox(ROOT)
+        hits = box.grep("calculate_total")
+        self.assertTrue(any(h.startswith("src/cart.py:") for h in hits))
+        self.assertTrue(any(h.startswith("src/pricing/tax.py:") for h in hits))
+        self.assertLessEqual(len(hits), 30)
+
+    def test_grep_no_matches(self):
+        token = "zzz_" + "no_such_" + "token_" + "zzz"
+        self.assertEqual(RepoSandbox(ROOT).grep(token), ["<no matches>"])
+
+
+class MutatorTests(unittest.TestCase):
+    def test_operators_round_trip_red_then_green(self):
+        clean = {
+            "pricing-tax": ("def add_tax(price, rate):\n    return price * (1 + rate)\n", "add_tax", [(100, 0.2)], [120]),
+            "tags-strip": ("def parse_tags(text):\n    return [tag.strip() for tag in text.split(',') if tag.strip()]\n", "parse_tags", [("red, ,blue",)], [["red", "blue"]]),
+        }
+        for op_id, (clean_src, func, args, expected) in clean.items():
+            buggy = apply_operator(clean_src, op_id)
+            self.assertNotEqual(buggy, clean_src)
+            self.assertFalse(safe_function_tests(buggy, func, args, expected))
+            self.assertTrue(safe_function_tests(remove_operator(buggy, op_id), func, args, expected))
+
+    def test_operator_ids_cover_patch_targets(self):
+        self.assertEqual(operator_ids(), ["pricing-tax", "tags-strip", "tax-double", "auth-eq"])
+
+    def test_apply_rejects_missing_snippet(self):
+        with self.assertRaises(ValueError):
+            apply_operator("nothing here\n", "pricing-tax")
 
 
 if __name__ == "__main__":
