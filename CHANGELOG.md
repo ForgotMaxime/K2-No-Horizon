@@ -39,4 +39,4 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 - `python -m unittest harness.test_harness -v` : 10/10 OK.
 - `python -m pytest -q` : 3 échecs attendus (`pricing`, `tags`, `tax`), 1 succès (`order_store`).
-- Branché au moteur ENDP (`run_local` v2, boucle 2-tours) le 2026-11-06 : baseline modèle **2/6** (v1), puis **4/8** (v2 : patch-3 `tax.py` et patch-4 `auth.py` verts en `pytest` isolé).
+- Branché au moteur ENDP (`run_local` v5 : tour 1 READ-only, retry assisté, télémétrie) le 2026-11-06 : baseline modèle **5/8** (patch-2/3/4 verts en `pytest` isolé). Leçon v3/v4 : exemples d'outils concrets copiés tels quels (0/8) → exemples abstraits.
