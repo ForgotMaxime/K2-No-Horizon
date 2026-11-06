@@ -32,4 +32,4 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 
 - `python -m unittest harness.test_harness -v` : 10/10 OK.
 - `python -m pytest -q` : 3 échecs attendus (`pricing`, `tags`, `tax`), 1 succès (`order_store`).
-- Branché au moteur ENDP (`run_local` v2, boucle 2-tours) le 2026-11-06 : baseline modèle **2/6** (outils utilisés, échecs de format et une navigation).
+- Branché au moteur ENDP (`run_local` v2, boucle 2-tours) le 2026-11-06 : baseline modèle **2/6** (v1), puis **4/8** (v2 : patch-3 `tax.py` et patch-4 `auth.py` verts en `pytest` isolé).
