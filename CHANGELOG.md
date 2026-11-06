@@ -8,6 +8,14 @@ Format basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
 - Guider le format des réponses (exemple d’en-têtes de diff, rappel `path:function`) sans donner les réponses ; grouper les changements de harnais avant `reset` + re-mesure.
 - Étendre la suite : patches sur `tax.py`/`cache.py`/`auth.py`, navigation multi-sauts.
 
+## [0.2.0] - 2026-11-06
+
+### Ajouté
+
+- Suite `k2-no-horizon-v2` : 8 tâches (2 navigation, 2 diagnostic, 4 patch). Nouveau : patch-3 (`src/pricing/tax.py`, cause racine de nav-1) et patch-4 (`src/auth.py`, comparaison par valeur).
+- `tests/test_auth.py` : rouge avant patch (chaînes non internées via `"".join`), vert après.
+- `SUITE_FILES` inclut le nouveau test.
+
 ## [0.1.0] - 2026-11-06
 
 ### Ajouté

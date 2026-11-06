@@ -1,5 +1,5 @@
 {
-  "suite": "k2-no-horizon-v1",
+  "suite": "k2-no-horizon-v2",
   "max_steps": 6,
   "tasks": [
     {
@@ -54,6 +54,28 @@
       "test_args": [["red, ,blue"]],
       "test_expected": [["red", "blue"]],
       "pytest": "tests/test_tags.py",
+      "required_tools": ["read_file"]
+    },
+    {
+      "id": "patch-3",
+      "category": "patch_generation",
+      "prompt": "Fix src/pricing/tax.py so calculate_total applies the tax rate exactly once (subtotal 10 at rate 0.1 totals 11). Read the file first, then return one unified diff with headers `diff --git a/src/pricing/tax.py b/src/pricing/tax.py`, `--- a/src/pricing/tax.py`, `+++ b/src/pricing/tax.py` and no explanation.",
+      "target_file": "src/pricing/tax.py",
+      "function": "calculate_total",
+      "test_args": [[[10], 0.1]],
+      "test_expected": [11],
+      "pytest": "tests/test_tax.py",
+      "required_tools": ["read_file"]
+    },
+    {
+      "id": "patch-4",
+      "category": "patch_generation",
+      "prompt": "Fix src/auth.py so is_authorized compares names by value instead of identity (equal strings must authorize). Read the file first, then return one unified diff with headers `diff --git a/src/auth.py b/src/auth.py`, `--- a/src/auth.py`, `+++ b/src/auth.py` and no explanation.",
+      "target_file": "src/auth.py",
+      "function": "is_authorized",
+      "test_args": [["Admin", "Admin"]],
+      "test_expected": [true],
+      "pytest": "tests/test_auth.py",
       "required_tools": ["read_file"]
     }
   ]

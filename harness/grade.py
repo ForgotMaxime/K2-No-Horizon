@@ -20,6 +20,7 @@ SUITE_FILES = [
     "src/pricing/tax.py",
     "src/cache.py",
     "src/auth.py",
+    "tests/test_auth.py",
     "app/routes/orders.py",
     "app/services/order_reader.py",
     "app/storage/order_store.py",
